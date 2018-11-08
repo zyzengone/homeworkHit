@@ -27,6 +27,7 @@ import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_SUBJECT;
 import static com.example.zyzeng.homeworkhit.MyDB.TABLE_NAME_HW;
 
 public class EditActivity extends AppCompatActivity {
+    public static int CLICK_WAY = 0;
     private Button saveButton;
     private Button cancelButton;
     private EditText editSub;
@@ -39,6 +40,7 @@ public class EditActivity extends AppCompatActivity {
     private MyDB DB;
     private SQLiteDatabase dataBase;
     private int id;
+    private Bundle bundle;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +98,18 @@ public class EditActivity extends AppCompatActivity {
                 String sql_count = "SELECT COUNT(*) FROM hw";
                 SQLiteStatement statement = dataBase.compileStatement(sql_count);
                 long count = statement.simpleQueryForLong();
-                String sqlAdd = "insert into "+TABLE_NAME_HW+" values ("+count+","+"'"+
-                        sub+"'"+","+"'"+con+"'"+","+"'"+date+"'"+")";
-                String update = "update "+TABLE_NAME_HW+" set "+COLUMN_NAME_SUBJECT+","+COLUMN_NAME_DATE+","+COLUMN_NAME_CONTENT+
-                        " where _id="+id;
-                dataBase.execSQL(sqlAdd);
-                
+                if(CLICK_WAY == 0){
+                    String sqlAdd = "insert into "+TABLE_NAME_HW+" values ("+count+","+"'"+
+                            sub+"'"+","+"'"+con+"'"+","+"'"+date+"'"+")";
+                    dataBase.execSQL(sqlAdd);
+                }else if(CLICK_WAY == 1){
+                    String update = "update hw set subject='"
+                            + sub + "',date='"+ date +"',content='"+con+"' where subject='"+bundle.getString("subject")+"'";
+//                    String update = "update hw set subject='"
+//                            + sub + "',date='"+ day +"',content='"+con+"' where _id='"+String.valueOf(id)+"'";
+                    dataBase.execSQL(update);
+                }
+
                 //resultCode配合fragment中的requestCode，finish返回后用来刷新listview界面。
                 Intent data = new Intent();       
                 setResult(2, data); 
@@ -116,6 +124,23 @@ public class EditActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        Intent intent = getIntent();
+        int from = intent.getIntExtra("from",0);
+        if (from ==2){
+            bundle = intent.getExtras();
+            editCont.setText(bundle.getString("content"));
+            editSub.setText(bundle.getString("subject"));
+            timeShowText.setText(bundle.getString("day"));
+        }
+        //id = bundle.getInt("itemID");   //通过主键id取值会造成无法删除，因为主键不会自动更新
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 3){
+
+        }
+    }
 }
