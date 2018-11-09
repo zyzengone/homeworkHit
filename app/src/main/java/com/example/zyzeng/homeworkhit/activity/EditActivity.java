@@ -3,14 +3,10 @@ package com.example.zyzeng.homeworkhit.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -18,13 +14,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.zyzeng.homeworkhit.MyDB;
+import com.example.zyzeng.homeworkhit.database.MyDB;
 import com.example.zyzeng.homeworkhit.R;
 
-import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_CONTENT;
-import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_DATE;
-import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_SUBJECT;
-import static com.example.zyzeng.homeworkhit.MyDB.TABLE_NAME_HW;
+import static com.example.zyzeng.homeworkhit.database.MyDB.TABLE_NAME_HW;
 
 public class EditActivity extends AppCompatActivity {
     public static int CLICK_WAY = 0;
@@ -94,17 +87,24 @@ public class EditActivity extends AppCompatActivity {
                 String con = editCont.getText().toString();
                 String date = String.valueOf(year)+"年"+String.valueOf(mouth)+"月"+String.valueOf(day)+"日";
                 
-                //通过select count(*)语句获取表中的行数。执行添加和更新语句
-                String sql_count = "SELECT COUNT(*) FROM hw";
-                SQLiteStatement statement = dataBase.compileStatement(sql_count);
-                long count = statement.simpleQueryForLong();
+                //查询取得最后一条数据的id，并加1为新增的条目赋得id值。
+                Cursor cursor = dataBase.query(TABLE_NAME_HW,null,null,null,null,null,null);
+                if (cursor.moveToLast()){
+                    String idstr = cursor.getString(cursor.getColumnIndex("_id"));
+                    id = Integer.valueOf(idstr)+1;
+                }
+//                //之前这样做会导致删除了一条中间数据后再添加数据导致id冲突。
+//                String sql_count = "SELECT COUNT(*) FROM hw";
+//                SQLiteStatement statement = dataBase.compileStatement(sql_count);
+//                long count = statement.simpleQueryForLong();
                 if(CLICK_WAY == 0){
-                    String sqlAdd = "insert into "+TABLE_NAME_HW+" values ("+count+","+"'"+
+                    String sqlAdd = "insert into "+TABLE_NAME_HW+" values ("+id+","+"'"+
                             sub+"'"+","+"'"+con+"'"+","+"'"+date+"'"+")";
                     dataBase.execSQL(sqlAdd);
                 }else if(CLICK_WAY == 1){
+                    //更新数据时，date项不能取上面的，因为有可能不会修改日期而产生空的时间。
                     String update = "update hw set subject='"
-                            + sub + "',date='"+ date +"',content='"+con+"' where subject='"+bundle.getString("subject")+"'";
+                            + sub + "',date='"+ timeShowText.getText() +"',content='"+con+"' where subject='"+bundle.getString("subject")+"'";
 //                    String update = "update hw set subject='"
 //                            + sub + "',date='"+ day +"',content='"+con+"' where _id='"+String.valueOf(id)+"'";
                     dataBase.execSQL(update);
@@ -125,6 +125,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        //判断intent是否来自listView的条目，是则将该item内的数据写入编辑界面
         Intent intent = getIntent();
         int from = intent.getIntExtra("from",0);
         if (from ==2){

@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
-import com.example.zyzeng.homeworkhit.MyDB;
+import com.example.zyzeng.homeworkhit.database.MyDB;
 import com.example.zyzeng.homeworkhit.activity.EditActivity;
 import com.example.zyzeng.homeworkhit.R;
 
@@ -27,12 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.content.ContentValues.TAG;
-import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_CONTENT;
-import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_DATE;
-import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_ID;
-import static com.example.zyzeng.homeworkhit.MyDB.COLUMN_NAME_SUBJECT;
-import static com.example.zyzeng.homeworkhit.MyDB.TABLE_NAME_HW;
+import static com.example.zyzeng.homeworkhit.database.MyDB.COLUMN_NAME_CONTENT;
+import static com.example.zyzeng.homeworkhit.database.MyDB.COLUMN_NAME_DATE;
+import static com.example.zyzeng.homeworkhit.database.MyDB.COLUMN_NAME_SUBJECT;
+import static com.example.zyzeng.homeworkhit.database.MyDB.TABLE_NAME_HW;
 
 
 /**
@@ -122,6 +118,14 @@ public class NotFragment extends Fragment {
                 ListView listView = (ListView)adapterView;
                 HashMap<String,String>map =(HashMap<String, String>) listView.getItemAtPosition(i);
                 String sub = map.get("subject");
+                String con = map.get("content");
+                String date = map.get("date");
+                OkFragment okFragment = new OkFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("sub",sub);
+                bundle.putString("con",con);
+                bundle.putString("date",date);
+                okFragment.setArguments(bundle);
                 String sqlDel = "delete from hw where subject="+"'"+sub+"'";
                 database.execSQL(sqlDel);
                 ListUpdate();
@@ -162,7 +166,7 @@ public class NotFragment extends Fragment {
     //更新界面
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode==1&&resultCode==2)
+        if (requestCode==1&&resultCode==2)
             ListUpdate();
     }
 }

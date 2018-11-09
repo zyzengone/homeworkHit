@@ -38,7 +38,8 @@
             android:src="@mipmap/add"
             app:elevation="5dp"
             app:fabSize="normal"
-            app:rippleColor="#e7d161" />
+            android:backgroundTint="@color/theme"
+            app:rippleColor="#0097a7" />
 
     </RelativeLayout>
 </LinearLayout>
