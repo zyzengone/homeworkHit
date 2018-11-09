@@ -47,7 +47,7 @@
         <EditText
             android:id="@+id/subject"
             android:background="@drawable/editsharp"
-            android:hint="请输入作业内容"
+            android:hint="请输入科目"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <LinearLayout
@@ -64,7 +64,8 @@
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/timeShow"/>
+                android:id="@+id/timeShow"
+                tools:text=":"/>
             <Button
                 android:layout_weight="0"
                 android:layout_width="wrap_content"
