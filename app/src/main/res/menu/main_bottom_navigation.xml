@@ -16,7 +16,7 @@
     <item
         android:id="@+id/menu_dead"
         android:enabled="true"
-        android:icon="@mipmap/denied_32x32"
+        android:icon="@mipmap/home_32x32"
         app:showAsAction="ifRoom"
-        android:title="过期"/>
+        android:title="我"/>
 </menu>

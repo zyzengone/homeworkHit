@@ -7,20 +7,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.example.zyzeng.homeworkhit.database.MyDB;
 import com.example.zyzeng.homeworkhit.activity.EditActivity;
 import com.example.zyzeng.homeworkhit.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import java.util.Map;
 import static com.example.zyzeng.homeworkhit.database.MyDB.COLUMN_NAME_CONTENT;
 import static com.example.zyzeng.homeworkhit.database.MyDB.COLUMN_NAME_DATE;
 import static com.example.zyzeng.homeworkhit.database.MyDB.COLUMN_NAME_SUBJECT;
+import static com.example.zyzeng.homeworkhit.database.MyDB.TABLE_NAME_FINISH;
 import static com.example.zyzeng.homeworkhit.database.MyDB.TABLE_NAME_HW;
 
 
@@ -36,10 +38,7 @@ import static com.example.zyzeng.homeworkhit.database.MyDB.TABLE_NAME_HW;
  */
 public class NotFragment extends Fragment {
 
-    private View view;
     private FloatingActionButton fab;
-    private Button button;
-    private Calendar calendar = Calendar.getInstance();
     private SQLiteDatabase database;
     private MyDB DB;
     private ArrayList list;
@@ -50,7 +49,6 @@ public class NotFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,6 +57,9 @@ public class NotFragment extends Fragment {
         database = DB.getReadableDatabase();
         return inflater.inflate(R.layout.fragment_not, container, false);
     }
+
+
+
 
     //坑，注意这里fragment中的点击事件要写在onActivityCreated里
     @Override
@@ -82,7 +83,16 @@ public class NotFragment extends Fragment {
 //            showItem.put("time",time[i]);  //利用HashMap存储一个名字和时间，前面的key对应后面的adapter中的参数
 //            listItem.add(showItem);        //用ArrayList将一对名字和时间存进去
 //        }
-        ListUpdate(); //打开界面的时候更新一次listView
+        ListUpdate();
+
+        listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                contextMenu.setHeaderTitle("contextMenu");
+                contextMenu.add(1,1,1,"删除并设为已完成");
+                contextMenu.add(1,2,1,"进入聊天室");
+            }
+        });
 
         //listView的点击事件
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -111,28 +121,53 @@ public class NotFragment extends Fragment {
                 cursor.close();
             }
         });
+
+
         //listView的长点击事件执行删除
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ListView listView = (ListView)adapterView;
-                HashMap<String,String>map =(HashMap<String, String>) listView.getItemAtPosition(i);
-                String sub = map.get("subject");
-                String con = map.get("content");
-                String date = map.get("date");
-                OkFragment okFragment = new OkFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("sub",sub);
-                bundle.putString("con",con);
-                bundle.putString("date",date);
-                okFragment.setArguments(bundle);
-                String sqlDel = "delete from hw where subject="+"'"+sub+"'";
-                database.execSQL(sqlDel);
-                ListUpdate();
-                return true;
-            }
-        });
+//        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                ListView listView = (ListView)adapterView;
+//                HashMap<String,String>map =(HashMap<String, String>) listView.getItemAtPosition(i);
+//                String sub = map.get("subject");
+//                String con = map.get("content");
+//                String date = map.get("date");
+////                String sqlDel = "delete from hw where subject="+"'"+sub+"'";
+//                ContentValues contentValues = new ContentValues();
+//                contentValues.put(COLUMN_NAME_SUBJECT,sub);
+//                contentValues.put(COLUMN_NAME_CONTENT,con);
+//                contentValues.put(COLUMN_NAME_DATE,date);
+//                database.insert(TABLE_NAME_FINISH,null,contentValues);
+////                database.execSQL(sqlDel);
+////                ListUpdate();
+//                return true;
+//            }
+//        });
     }
+
+    //长按弹出上下文对话框执行删除等操作
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        View view = menuInfo.targetView;
+        TextView textView = view.findViewById(R.id.line1);
+        String sub = textView.getText().toString();
+        String whereClause = "subject=?";
+        String[] whereArgs = {sub};
+
+        switch (item.getItemId()){
+            case 1:
+                String sql = "insert into finish('subject','content','date') select subject,content,date from hw where subject="+"'"+sub+"'";
+                database.execSQL(sql);
+                database.delete(TABLE_NAME_HW,whereClause,whereArgs);
+                ListUpdate();
+                break;
+            case 2:
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
     //得到数据
     private List<Map<String, Object>> getData(){
         Cursor cursor = database.query(TABLE_NAME_HW,null,null,null,null,null,null);
@@ -146,6 +181,7 @@ public class NotFragment extends Fragment {
             map.put(COLUMN_NAME_DATE,day);
             list.add(map);
         }
+        cursor.close();
         return list;
     }
     //更新列表

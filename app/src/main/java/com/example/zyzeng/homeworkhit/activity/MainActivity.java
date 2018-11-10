@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.zyzeng.homeworkhit.R;
-import com.example.zyzeng.homeworkhit.fragment.DeadFragment;
+import com.example.zyzeng.homeworkhit.fragment.HomeFragment;
 import com.example.zyzeng.homeworkhit.fragment.NotFragment;
 import com.example.zyzeng.homeworkhit.fragment.OkFragment;
 
@@ -53,7 +53,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         mFragments = new ArrayList<>();
         mFragments.add(new NotFragment());
         mFragments.add(new OkFragment());
-        mFragments.add(new DeadFragment());
+        mFragments.add(new HomeFragment());
         setFragmentPosition(0);
     }
 

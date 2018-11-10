@@ -3,6 +3,7 @@ package com.example.zyzeng.homeworkhit.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.Nullable;
 
 public class MyDB extends SQLiteOpenHelper {
     public static final String TABLE_NAME_HW = "hw";
@@ -11,6 +12,11 @@ public class MyDB extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_SUBJECT = "subject";
     public static final String COLUMN_NAME_CONTENT = "content";
     public static final String COLUMN_NAME_DATE = "date";
+
+    public MyDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+    }
+
     public MyDB(Context context) {
         super(context, "database", null, 1);
     }

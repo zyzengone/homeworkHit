@@ -4,4 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_edit">编辑页面</string>
+    <string name="personal_page">个人主页</string>
+    <string name="not_page">未完成列表</string>
+    <string name="ok_page">已完成列表</string>
 </resources>
