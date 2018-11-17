@@ -7,4 +7,14 @@
     <string name="personal_page">个人主页</string>
     <string name="not_page">未完成列表</string>
     <string name="ok_page">已完成列表</string>
+    <string name="hint_email">邮箱</string>
+    <string name="hint_password">密码</string>
+    <string name="hint_name">姓名</string>
+    <string name="btn_login">登陆</string>
+    <string name="btn_register">注册</string>
+    <string name="btn_link_to_register">没有账号? 立刻注册.</string>
+    <string name="btn_link_to_login">已经注册! 点此登录.</string>
+    <string name="welcome">欢迎</string>
+    <string name="btn_logout">退出</string>
+    <string name="name">全名</string>
 </resources>

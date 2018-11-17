@@ -1,5 +1,6 @@
 package com.example.zyzeng.homeworkhit.activity;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.BottomNavigationView;
@@ -19,12 +20,17 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     private BottomNavigationView mBottomNavigationView;
     private int lastIndex;
     List<Fragment> mFragments;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initBottomNavigation();
         initData();
+        Intent intent = getIntent();
+        int i = intent.getIntExtra("page",1);
+        setFragmentPosition(i);    //通过登录后的传值，使登录后自动跳转到主页fragment
     }
     public void initBottomNavigation() {
         mBottomNavigationView = findViewById(R.id.bv_bottomNavigation);

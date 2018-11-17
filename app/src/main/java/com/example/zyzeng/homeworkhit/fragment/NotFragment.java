@@ -72,7 +72,7 @@ public class NotFragment extends Fragment {
             public void onClick(View view) {
                 EditActivity.CLICK_WAY = 0;
                 Intent intent = new Intent(getActivity(),EditActivity.class);
-                intent.putExtra("from",1);
+                intent.putExtra("from",1); //传给EditActivity来判断是从fab进入还是listview进入
                 startActivityForResult(intent,1);
             }
         });
@@ -184,7 +184,7 @@ public class NotFragment extends Fragment {
         cursor.close();
         return list;
     }
-    //更新列表
+    //更新列表函数
     private void ListUpdate(){
         SimpleAdapter myAdapter = new SimpleAdapter(
                 getActivity(),
@@ -199,7 +199,7 @@ public class NotFragment extends Fragment {
 
 
     @Override
-    //更新界面
+    //从EditActivity中接到数据后更新界面
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==1&&resultCode==2)
