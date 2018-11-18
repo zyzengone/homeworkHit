@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.zyzeng.homeworkhit.R;
+import com.example.zyzeng.homeworkhit.activity.ChatActivity;
 import com.example.zyzeng.homeworkhit.activity.LoginActivity;
 import com.example.zyzeng.homeworkhit.config.SessionManager;
 import com.example.zyzeng.homeworkhit.database.MyDB;
@@ -60,7 +61,8 @@ public class HomeFragment extends Fragment {
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent =  new Intent(getActivity(),ChatActivity.class);
+                startActivity(intent);
             }
         });
         super.onActivityCreated(savedInstanceState);

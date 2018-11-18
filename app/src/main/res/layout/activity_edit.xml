@@ -72,6 +72,8 @@
                 tools:text=":"/>
             <Button
                 android:layout_weight="0"
+                android:background="@color/btn_login_bg"
+                android:textColor="@color/btn_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="选择"
